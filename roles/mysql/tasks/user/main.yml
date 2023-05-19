@@ -6,6 +6,6 @@
     password: "{{ mysqluser_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
     priv: "*.*:ALL,GRANT"
-    host: localhost
+    host: 10.25.55.159
     state: present
  
