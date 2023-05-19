@@ -1,0 +1,6 @@
+l_temp_list_path: /tmp/list.csv
+l_temp_win_path: /tmp/win.csv
+l_ssh_path: /root/.ssh/known_hosts
+sf_username: "{{ Username }}"
+sf_password: "{{ Password }}"
+sf_url: "{{ url }}"

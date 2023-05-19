@@ -1,0 +1,11 @@
+
+---
+
+- name: Create db if it does not exist
+  mysql_db:
+    name: "{{ dbname }}"
+    state: present
+    login_host: localhost
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysqluser_password}}"
+    

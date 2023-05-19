@@ -1,0 +1,44 @@
+---
+
+- name: install | pre-requisties | installing pre requisites
+  become: true
+  package:
+    update_cache: yes #update repo
+
+- name: Create | mongodb | Create the MongoDB repository file
+  become: true
+  blockinfile:
+    path: "{{ mongodb_filepath_rocky }}"
+    content: |
+      [mongodb-org-6.0]
+      name=MongoDB Repository
+      baseurl="{{ mongo_rocky_repo_url }}"
+      gpgcheck=1
+      enabled=1
+      gpgkey="{{ gpg_key_rocky_src }}"
+    create: true
+
+- name: Install | mongodb | Install MongoDB package
+  become: true
+  yum:
+    name: "{{ mongodb_package_name }}"
+    state: present
+    
+- name: Update package cache
+  become: true
+  package:
+    update_cache: yes
+
+- name: start | mongod | Start MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    state: started
+
+- name: Enable | mongod | Enable MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    enabled: yes
+ 
+

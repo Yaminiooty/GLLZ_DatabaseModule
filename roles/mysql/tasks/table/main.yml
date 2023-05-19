@@ -1,0 +1,46 @@
+---
+
+- name: Create table if it doesn't exist
+  shell:
+    cmd: |
+      mysql -u "{{ mysql_user }}" -p"{{ mysqluser_password }}" -e '
+      USE {{ dbname }} ;
+      CREATE TABLE IF NOT EXISTS {{ tablename }} (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE
+      );
+      '
+  register: create_table_output
+  failed_when: create_table_output.rc != 0
+
+- name: Display message if table already exists
+  debug:
+    msg: "Table {{ tablename }} already exists."
+  when: create_table_output.stdout.find('Table already exists') != -1
+
+
+- name: Insert records into table
+  shell:
+    cmd: |
+      mysql -u "{{ mysql_user }}" -p"{{ mysqluser_password }}" -e '
+      USE {{ dbname }} ;
+      INSERT INTO {{ tablename }} (name, email) VALUES ("Ashok", "Ashok@example.com");
+      INSERT INTO {{ tablename }} (name, email) VALUES ("Gopi", "Gopih@example.com");
+      '
+  register: insert_output
+  ignore_errors: true
+
+- name: Display message for duplicate key
+  debug:
+    msg: "Duplicate key violation occurred."
+  when: "'Duplicate entry' in insert_output.stderr"
+
+
+
+
+
+
+
+
+

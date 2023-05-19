@@ -1,0 +1,53 @@
+---
+
+- name: Read csv file of Linux VMs
+  hosts: localhost
+  vars_files:
+    - Variables_file.yml
+  tasks:
+    - name: Download csv file for linux
+      get_url:
+        url: "{{ sf_url }}"
+        dest: "{{ l_temp_list_path }}"
+    
+      
+    - name: read linux csv file
+      read_csv:
+        path: "{{ l_temp_list_path }}"
+      register: vmlist
+     
+      
+    - name: list the values in CSV file
+      debug:
+        var: "{{ item }}"
+      loop: "{{ vmlist.list }}"
+      
+      
+    - name: removing entry from known_hosts if any already exist
+      known_hosts:
+        name: "{{ item.hostname }}"
+        path: "{{ l_ssh_path }}"
+        state: absent
+      with_items: "{{ vmlist.list }}"
+      
+      
+    - name: create dynamic inventory for linux
+      add_host:
+        hostname: "{{ item.hostname }}"
+        groups: [ 'linux' ]
+        ansible_ssh_host: "{{ item.hostname }}"
+      loop: "{{ vmlist.list }}"
+     
+
+   
+ 
+- name: Install Database
+  hosts: all
+  gather_facts: true
+  tasks:
+    - include_role:
+        name: mongodb
+        tasks_from: main.yml
+
+
+

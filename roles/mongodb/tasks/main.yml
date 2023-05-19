@@ -1,0 +1,28 @@
+---
+- name: Gather distribution info
+  setup:
+      gather_subset: distribution,hardware,platform,virtual,!all,!min
+  when:
+      - ansible_distribution is not defined
+  tags:
+      - always
+
+
+- name: Check if MongoDB is installed
+  ignore_errors: true
+  command: "mongod --version"
+  register: mongo_output
+
+
+- name: Install MongoDB for Ubuntu
+  include_tasks: install_mongo_ubuntu/main.yml
+  when: 
+      - (ansible_distribution == 'Ubuntu') and ("'mongod' not in mongo_output.stdout")
+
+- name: Install MongoDB for Rocky
+  include_tasks: install_mongo_rocky/main.yml
+  when: 
+      - (ansible_distribution == 'Rocky') and ("'mongod' not in mongo_output.stdout")
+      
+- name: create db and tables
+  include_tasks: db_table_creation/main.yml

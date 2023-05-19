@@ -1,0 +1,42 @@
+# tasks file for my_mysql_role---
+
+---
+- name: Gather distribution info
+  setup:
+      gather_subset: distribution,hardware,platform,virtual,!all,!min
+  when:
+      - ansible_distribution is not defined
+  tags:
+      - always
+
+
+- name: Check MySQL availability
+  ignore_errors: true
+  command : "mysql --version"
+  register: mysql_output
+  tags:
+      - always
+
+- name: Install MySQL for Ubuntu
+  include_tasks: mysql_install_ubuntu/main.yml
+  when: 
+      - (ansible_distribution == 'Ubuntu') and ("'mysql' not in mysql_output.stdout")
+
+- name: Install MySQL for Rocky
+  include_tasks: mysql_install_rhel/main.yml
+  when: 
+      - (ansible_distribution == 'Rocky') and ("'mysql' not in mysql_output.stdout")
+      
+- name: Include tasks for user creation
+  include_tasks: user/main.yml
+      
+- name: Include tasks for database creation
+  include_tasks: db/main.yml
+
+
+
+
+- name: Include tasks for table creation and data insertion
+  include_tasks: table/main.yml
+
+

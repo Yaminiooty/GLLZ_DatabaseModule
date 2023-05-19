@@ -1,0 +1,68 @@
+---
+
+- name: Update | apt | Update APT package
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Download | GPG-KEY | Download MongoDB GPG key from the url
+  get_url:
+    url: "{{ gpg_key_ubuntu_src }}"
+    dest: "{{ gpg_keyfile_ubuntu_dest }}"
+    mode: '0777'
+  register: download_result
+
+
+- name: Add | apt-key | Add MongoDB GPG key to apt_key
+  become: true
+  apt_key:
+#    data: "{{ lookup('file', '/tmp/server-6.0.asc') }}"
+    file: "{{ gpg_keyfile_ubuntu_dest }}"
+    state: present
+  
+    debug:
+      var: download_result
+
+- name: Create | file | Creates a file
+  become: true
+  file:
+    path: "{{ mongodb_filepath }}"
+    state: touch
+
+- name: Add | file |  MongoDB repository entry to file
+  become: true
+  lineinfile:
+    path: "{{ mongodb_filepath }}"
+    line: 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse'
+    state: present
+
+# - name: Debug download result
+#   debug:
+#     var: download_result
+
+- name: Update | apt | Update APT package before mongodb installation
+  become: true
+  apt:
+    update_cache: yes
+ 
+
+- name: Install | Mongodb | Install MongoDB package using apt
+  become: true
+  apt:
+    name: "{{ mongodb_package_name }}"
+    state: present
+    update_cache: yes
+
+- name: start | mongod | Start MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    state: started
+
+- name: Enable | mongod | Enable MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    enabled: yes
+
+ 

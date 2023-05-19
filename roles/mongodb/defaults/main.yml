@@ -1,0 +1,16 @@
+---
+
+#for ubuntu
+gpg_key_ubuntu_src: https://www.mongodb.org/static/pgp/server-6.0.asc
+gpg_keyfile_ubuntu_dest: /tmp/server-6.0.asc
+mongodb_filepath: /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+#common for ubuntu and rocky
+mongodb_package_name: mongodb-org
+mongo_service: mongod
+
+#for rocky
+mongodb_filepath_rocky: /etc/yum.repos.d/mongodb-org-6.0.repo
+mongo_rocky_repo_url: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/6.0/x86_64/
+gpg_key_rocky_src: https://www.mongodb.org/static/pgp/server-6.0.asc
+mongo_org_version: [mongodb-org-6.0]

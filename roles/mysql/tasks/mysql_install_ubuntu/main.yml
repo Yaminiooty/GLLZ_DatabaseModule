@@ -1,0 +1,43 @@
+---
+
+- name: Update APT cache
+  become: yes
+  apt:
+    update_cache: yes
+     
+
+- name: install mysql
+  become: yes
+  apt:
+    name: mysql-server
+    state: present
+    
+- name: install PyMySQL
+  become: yes
+  apt:
+    name: python3-pymysql
+    state: present
+    
+- name: Install MySQL client package
+  become: yes
+  apt:
+    name: mysql-client
+    state: present
+    
+- name: Install MySQLdb package
+  become: yes
+  apt:
+    name: python3-mysqldb
+    state: present
+    
+- name: Install MySQL client package
+  become: yes
+  apt:
+    name: mysql-client
+    state: present
+    
+- name: Start MySQL service
+  become: yes
+  service:
+    name: mysql
+    state: started
