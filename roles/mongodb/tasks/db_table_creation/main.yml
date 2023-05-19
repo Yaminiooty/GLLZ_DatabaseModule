@@ -1,11 +1,11 @@
 ---
 
 - name: Create | Collection | Creates a database
-  shell: mongosh --eval 'use gllzmembers1';
+  shell: mongosh --eval 'use {{dbname}}';
   
 - name: Create | Collection | Creates first collection
-  shell: mongosh gllzmembers1 --eval 'db.createCollection("members");'
+  shell: mongosh "{{dbname}}" --eval 'db.createCollection("{{collection}}");'
   
   
 - name: Create and Add | Collection and documents | Creates first collection and adds documents to it
-  shell: mongosh gllzmembers1 --eval 'db.members.insertMany([{"name":"Tarini"},{"name":"Srisharan"},{"name":"Bharat"},{"name":"Yamini"},{"name":"Ashok"},{"name":"Saranya"},{"name":"Sreehari"}])';
+  shell: mongosh "{{dbname}}" --eval 'db.{{collection}}.insertMany([{"name":"Tarini"},{"name":"Srisharan"},{"name":"Bharat"},{"name":"Yamini"},{"name":"Ashok"},{"name":"Saranya"},{"name":"Sreehari"}])';
