@@ -8,4 +8,17 @@
     priv: "*.*:ALL,GRANT"
     host: localhost
     state: present
+  when: ansible_distribution == 'ubuntu'
+ 
+ 
+- name: Create MySQL user and grant privileges
+  become: true
+  mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysqluser_password }}"
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    priv: "*.*:ALL,GRANT"
+    host: localhost
+    state: present
+  when: ansible_distribution == 'Rocky'
  
