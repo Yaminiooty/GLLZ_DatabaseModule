@@ -1,5 +1,5 @@
 ---
-- name: Create MySQL user and grant privileges
+- name: Create MySQL user and grant privileges (Ubuntu)
   become: true
   mysql_user:
     name: "{{ mysql_user }}"
@@ -8,10 +8,10 @@
     priv: "*.*:ALL,GRANT"
     host: localhost
     state: present
-  when: ansible_distribution == 'ubuntu'
- 
- 
-- name: Create MySQL user and grant privileges
+  when: ansible_distribution == 'Ubuntu'
+  register: ubuntu_mysql_user_result
+
+- name: Create MySQL user and grant privileges (Rocky)
   become: true
   mysql_user:
     name: "{{ mysql_user }}"
@@ -21,4 +21,11 @@
     host: localhost
     state: present
   when: ansible_distribution == 'Rocky'
+  register: rocky_mysql_user_result
+
+- name: Display user already exists message
+  debug:
+    msg: "MySQL user already exists."
+  when: ubuntu_mysql_user_result.changed == false or rocky_mysql_user_result.changed == false
+
  
