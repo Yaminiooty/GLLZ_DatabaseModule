@@ -1,17 +1,18 @@
 ---
 
-- name: install mysql
+- name: Install MySQL
   become: yes
   yum:
     name: mysql-server
     state: present
-    
+  register: mysql_install
+
 - name: Install pip for Python 3
   become: yes
   package:
      name: python3-pip
      state: present
-    
+
 - name: Install Required pip modules
   become: yes
   pip:
@@ -19,12 +20,11 @@
       - PyMySQL
     state: present
     executable: pip3
-    
 
-  
-    
 - name: Start MySQL service
   become: yes
   service:
     name: mysqld
     state: started
+  when: mysql_install.changed
+
