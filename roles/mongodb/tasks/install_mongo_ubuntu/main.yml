@@ -1,7 +1,4 @@
 ---
-
-
----
 - name: Import the public key used by the package management system
   become: true
   apt_key:
