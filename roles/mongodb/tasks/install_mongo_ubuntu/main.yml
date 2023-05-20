@@ -26,4 +26,3 @@ handlers:
     service:
       name: mongod
       state: started
-
