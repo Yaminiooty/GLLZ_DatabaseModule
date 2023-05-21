@@ -5,25 +5,25 @@
     dest: "{{ gpg_keyfile_ubuntu_dest }}"
     mode: '0644'
 
-- name: Add MongoDB GPG key to apt
-  apt_key:
-    key_file: "{{ gpg_keyfile_ubuntu_dest }}"
-    state: present
+- name: Import MongoDB GPG key
+  become: true
+  shell: "apt-key add {{ gpg_keyfile_ubuntu_dest }}"
 
 - name: Create MongoDB repository file
+  become: true
   copy:
     content: 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse'
     dest: "{{ mongodb_filepath }}"
     mode: '0644'
 
 - name: Update apt cache
+  become: true
   apt:
     update_cache: yes
 
 - name: Install MongoDB
+  become: true
   apt:
     name: "{{ mongodb_package_name }}"
     state: present
     update_cache: yes
-
-
