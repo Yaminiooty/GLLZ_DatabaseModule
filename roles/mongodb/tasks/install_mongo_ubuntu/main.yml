@@ -1,40 +1,14 @@
 ---
-- name: install | pre-requisties | installing pre requisites
-  become: true
-  apt:
-    update_cache: yes
-    
+
 - name: Import the public key used by the package management system
-  become: true
-  apt_key:
-    keyserver: hkp://keyserver.ubuntu.com:80
-    id: 7F0CEB10
-    state: present
-
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=7F0CEB10 
+  state=present
 - name: Add MongoDB repository
-  become: true
-  apt_repository:
-    repo: 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
-    state: present
-
-- name: Install MongoDB
-  become: true
-  apt:
-    pkg: mongodb-org
-    state: present
-- name: Update package cache
-  become: true
-  apt:
-    update_cache: yes
-- name: start | mongod | Start MongoDB service
-  become: true
-  service:
-    name: "{{ mongo_service }}"
-    state: started
-
-- name: Enable | mongod | Enable MongoDB service
-  become: true
-  service:
-    name: "{{ mongo_service }}"
-    enabled: yes
-
+  apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' 
+  state=present
+- name: install mongodb
+  apt: pkg=mongodb-org 
+  state=latest 
+  update_cache=yes
+  notify:
+    - start mongodb
