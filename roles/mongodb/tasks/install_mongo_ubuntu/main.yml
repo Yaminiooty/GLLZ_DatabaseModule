@@ -1,15 +1,18 @@
 ---
 
 - name: Import the public key used by the package management system
+  become: true
   apt_key: 
      keyserver=hkp://keyserver.ubuntu.com:80 
      id=7F0CEB10 
      state=present
 - name: Add MongoDB repository
+  become: true
   apt_repository: 
      repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' 
      state=present
 - name: install mongodb
+  become: true
   apt: 
     pkg=mongodb-org 
     state=latest 
