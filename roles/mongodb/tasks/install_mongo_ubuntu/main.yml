@@ -21,8 +21,3 @@
   notify:
     - start mongodb
 
-handlers:
-  - name: start mongodb
-    service:
-      name: mongod
-      state: started
