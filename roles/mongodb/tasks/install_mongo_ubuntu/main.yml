@@ -15,15 +15,14 @@
 
 - name: Update APT package cache
   become: true
-  apt:
-    update_cache: yes
+  shell: apt-get update
 
 - name: Install MongoDB packages
   become: true
   apt:
     name: mongodb-org
     state: present
-    update_cache: yes
+    update_cache: no
 
 - name: Start MongoDB service
   become: true
