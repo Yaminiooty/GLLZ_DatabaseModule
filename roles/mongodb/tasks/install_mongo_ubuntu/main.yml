@@ -2,15 +2,15 @@
 - name: Import the public key used by the package management system
   become: true
   apt_key:
-     keyserver: hkp://keyserver.ubuntu.com:80
-     id: 7F0CEB10
-     state: present
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: 7F0CEB10
+    state: present
 
 - name: Add MongoDB repository
   become: true
   apt_repository:
-     repo: 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.4 multiverse'
-     state: present
+    repo: 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.4 multiverse'
+    state: present
 
 - name: Update apt cache
   become: true
@@ -31,6 +31,7 @@
 - name: Start MongoDB service
   become: true
   service:
-     name: mongod
-     state: started
-     enabled: yes
+    name: mongod
+    state: started
+    enabled: yes
+
