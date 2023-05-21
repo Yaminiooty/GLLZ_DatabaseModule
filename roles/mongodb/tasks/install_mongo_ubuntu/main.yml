@@ -13,6 +13,12 @@
     state: present
     filename: mongodb-org-6.0.list
 
+- name: Remove MongoDB repository 4.4
+  become: true
+  file:
+    path: /etc/apt/sources.list.d/mongodb-org-4.4.list
+    state: absent
+
 - name: Update APT package cache
   become: true
   shell: apt-get update
