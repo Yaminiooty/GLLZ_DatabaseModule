@@ -1,4 +1,9 @@
 ---
+- name: install | pre-requisties | installing pre requisites
+  become: true
+  package:
+    update_cache: yes #update repo
+    
 - name: Import the public key used by the package management system
   become: true
   apt_key:
@@ -16,8 +21,20 @@
   become: true
   apt:
     pkg: mongodb-org
-    state: latest
+    state: present
+- name: Update package cache
+  become: true
+  package:
     update_cache: yes
-  notify:
-    - start mongodb
+- name: start | mongod | Start MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    state: started
+
+- name: Enable | mongod | Enable MongoDB service
+  become: true
+  service:
+    name: "{{ mongo_service }}"
+    enabled: yes
 
