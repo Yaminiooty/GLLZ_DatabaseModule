@@ -1,9 +1,8 @@
 ---
-- name: Import the public key used by the package management system
+- name: Import the MongoDB public key
   become: true
   apt_key:
-    keyserver: hkp://keyserver.ubuntu.com:80
-    id: 7F0CEB10
+    url: https://www.mongodb.org/static/pgp/server-4.4.asc
     state: present
 
 - name: Remove problematic MongoDB repository file
