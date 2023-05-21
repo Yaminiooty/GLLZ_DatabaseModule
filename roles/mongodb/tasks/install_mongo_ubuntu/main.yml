@@ -6,12 +6,18 @@
     id: 7F0CEB10
     state: present
 
+- name: Remove problematic MongoDB repository file
+  become: true
+  file:
+    path: /etc/apt/sources.list.d/mongodb-org-3.2.list.list
+    state: absent
+  ignore_errors: true
+
 - name: Add MongoDB repository
   become: true
   apt_repository:
     repo: 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.4 multiverse'
     state: present
-    filename: mongodb-org-4.4.list
 
 - name: Update apt cache
   become: true
