@@ -1,8 +1,8 @@
 ---
 - name: install | pre-requisties | installing pre requisites
   become: true
-  package:
-    update_cache: yes #update repo
+  apt:
+    update_cache: yes
     
 - name: Import the public key used by the package management system
   become: true
@@ -24,7 +24,7 @@
     state: present
 - name: Update package cache
   become: true
-  package:
+  apt:
     update_cache: yes
 - name: start | mongod | Start MongoDB service
   become: true
