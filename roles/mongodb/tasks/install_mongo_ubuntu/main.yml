@@ -1,42 +1,58 @@
 ---
-- name: Import the MongoDB public key
+- name: Download | GPG-KEY | Download MongoDB GPG key from the url
+  get_url:
+    url: "{{ gpg_key_ubuntu_src }}"
+    dest: "{{ gpg_keyfile_ubuntu_dest }}"
+    mode: '0777'
+  register: download_result
+  environment: 
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+
+- name: Add | apt-key | Add MongoDB GPG key to apt_key
   become: true
   apt_key:
-    url: https://www.mongodb.org/static/pgp/server-4.4.asc
+#    data: "{{ lookup('file', '/tmp/server-6.0.asc') }}"
+    file: "{{ gpg_keyfile_ubuntu_dest }}"
     state: present
+  environment: 
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    debug:
+      var: download_result
 
-- name: Remove problematic MongoDB repository file
+- name: Create | file | Creates a file
   become: true
   file:
-    path: /etc/apt/sources.list.d/mongodb-org-3.2.list.list
-    state: absent
-  ignore_errors: true
+    path: "{{ mongodb_filepath }}"
+    state: touch
 
-- name: Add MongoDB repository
+- name: Add | file |  MongoDB repository entry to file
   become: true
-  apt_repository:
-    repo: 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/4.4 multiverse'
+  lineinfile:
+    path: "{{ mongodb_filepath }}"
+    line: 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse'
     state: present
 
-- name: Update apt cache
+# - name: Debug download result
+#   debug:
+#     var: download_result
+
+- name: Update | apt | Update APT package before mongodb installation
   become: true
   apt:
     update_cache: yes
+  environment: 
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
 
-- name: Install MongoDB packages
+- name: Install | Mongodb | Install MongoDB package using apt
   become: true
   apt:
-    name:
-      - mongodb-org
-      - mongodb-org-server
-      - mongodb-org-shell
-      - mongodb-org-mongos
-      - mongodb-org-tools
+    name: "{{ mongodb_package_name }}"
     state: present
+    update_cache: yes
+  environment: 
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
 
-- name: Start MongoDB service
-  become: true
-  service:
-    name: mongod
-    state: started
-    enabled: yes
