@@ -1,48 +1,29 @@
 ---
-- name: Download | GPG-KEY | Download MongoDB GPG key from the url
+- name: Download MongoDB GPG key
   get_url:
     url: "{{ gpg_key_ubuntu_src }}"
     dest: "{{ gpg_keyfile_ubuntu_dest }}"
-    mode: '0777'
-  register: download_result
-  
+    mode: '0644'
 
-- name: Add | apt-key | Add MongoDB GPG key to apt_key
-  become: true
+- name: Add MongoDB GPG key to apt
   apt_key:
-#    data: "{{ lookup('file', '/tmp/server-6.0.asc') }}"
-     file: "{{ gpg_keyfile_ubuntu_dest }}"
-     state: present
- 
-
-- name: Create | file | Creates a file
-  become: true
-  file:
-    path: "{{ mongodb_filepath }}"
-    state: touch
-
-- name: Add | file |  MongoDB repository entry to file
-  become: true
-  lineinfile:
-    path: "{{ mongodb_filepath }}"
-    line: 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse'
+    key_file: "{{ gpg_keyfile_ubuntu_dest }}"
     state: present
 
-# - name: Debug download result
-#   debug:
-#     var: download_result
+- name: Create MongoDB repository file
+  copy:
+    content: 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse'
+    dest: "{{ mongodb_filepath }}"
+    mode: '0644'
 
-- name: Update | apt | Update APT package before mongodb installation
-  become: true
+- name: Update apt cache
   apt:
     update_cache: yes
 
-
-- name: Install | Mongodb | Install MongoDB package using apt
-  become: true
+- name: Install MongoDB
   apt:
     name: "{{ mongodb_package_name }}"
     state: present
     update_cache: yes
-  
+
 
